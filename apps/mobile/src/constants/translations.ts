@@ -1,0 +1,339 @@
+import type { ThemeName } from './theme';
+
+export type Language = 'ru' | 'en' | 'kk';
+
+export const translations = {
+  ru: {
+    welcome: 'Добро пожаловать!',
+    profile: {
+      studentTitle: 'Профиль студента',
+      emptyValue: '—',
+      fields: {
+        fullName: 'ФИО',
+        photo: 'Фото',
+        iin: 'ИИН',
+        studentId: 'ID студента',
+        birthDate: 'Дата рождения',
+        gender: 'Пол',
+        group: 'Группа',
+        course: 'Курс',
+        studyForm: 'Форма обучения',
+        studyLanguage: 'Язык обучения',
+        specialty: 'Специальность / образовательная программа',
+        institute: 'Институт',
+        department: 'Кафедра',
+        academicStatus: 'Академический статус'
+      },
+      values: {
+        gender: { male: 'Мужской', female: 'Женский' },
+        studyForm: { fullTime: 'Очная', partTime: 'Заочная' },
+        studyLanguage: { kk: 'Қазақша', ru: 'Русский', en: 'English' },
+        academicStatus: {
+          studying: 'Обучается',
+          academicLeave: 'Академический отпуск',
+          graduate: 'Выпускник',
+          expelled: 'Отчислен'
+        }
+      },
+      actions: {
+        edit: 'Редактировать',
+        save: 'Сохранить',
+        cancel: 'Отмена',
+        changePhoto: 'Сменить фото',
+        showIin: 'Показать ИИН',
+        hideIin: 'Скрыть ИИН'
+      },
+      sections: { personalData: 'Личные данные', study: 'Учёба' },
+      validation: {
+        required: 'Заполните обязательное поле.',
+        requiredStudentId: 'Укажите ID студента.',
+        requiredGroup: 'Укажите группу.',
+        invalidIin: 'ИИН должен состоять из 12 цифр.',
+        invalidBirthDate: 'Укажите реальную дату в формате ДД.ММ.ГГГГ, не позднее сегодняшнего дня.',
+        invalidCourse: 'Курс должен быть от 1 до 6.',
+        photoPermissionDenied: 'Разрешите доступ к галерее, чтобы выбрать фото.',
+        photoPickerError: 'Не удалось открыть галерею.'
+      }
+    },
+    campusHubTitle: 'Campus Hub',
+    back: 'Назад',
+    openLibrary: 'Открыть библиотеку',
+    profileTitle: 'Профиль',
+    accountLabel: 'Логин',
+    accountUnavailable: 'Аккаунт не найден',
+    servicesTitle: 'Campus Services',
+    longPressToSelect: 'Нажмите и удерживайте, чтобы выбрать сервис',
+    tabHome: 'Главная',
+    tabServices: 'Сервисы',
+    tabProfile: 'Профиль',
+    loginSubtitle: 'Вход в Campus Services',
+    login: 'Логин',
+    password: 'Пароль',
+    loginPlaceholder: 'Введите логин',
+    passwordPlaceholder: 'Введите пароль',
+    hide: 'Скрыть',
+    show: 'Показать',
+    loginButton: 'Войти',
+    registerButton: 'Зарегистрировать новый аккаунт',
+    fillLogin: 'Заполните поле логина.',
+    fillPassword: 'Заполните поле пароля.',
+    minPassword: (length: number) => `Пароль должен содержать минимум ${length} символов.`,
+    registerFirst: 'Сначала зарегистрируйте аккаунт.',
+    invalidCredentials: 'Неверный логин или пароль.',
+    registerTitle: 'Регистрация аккаунта',
+    registerSubtitle: 'Получите доступ к сервисам Campus Services',
+    newLoginPlaceholder: 'Придумайте логин',
+    repeatPassword: 'Повторите пароль',
+    repeatPasswordPlaceholder: 'Введите пароль ещё раз',
+    allFields: 'Заполните все поля.',
+    passwordsMismatch: 'Пароли не совпадают.',
+    register: 'Зарегистрироваться',
+    backToLogin: 'Вернуться ко входу',
+    campusSubtitle: 'Все университетские сервисы в одном месте',
+    selectedOnly: 'Только выбранные',
+    selected: 'Выбрано',
+    unavailable: 'Недоступно',
+    new: 'Новое',
+    logout: 'Выйти',
+    errorTitle: 'Ошибка',
+    routeNotFound: 'Маршрут не найден',
+    switchTheme: (theme: ThemeName) => theme === 'dark' ? 'Включить светлую тему' : 'Включить тёмную тему',
+    switchLanguage: (next: Language) => next === 'en' ? 'Переключить язык на английский' : next === 'kk' ? 'Переключить язык на казахский' : 'Переключить язык на русский',
+    services: [
+      ['Библиотека', 'Книги и учебные ресурсы'],
+      ['Столовая', 'Меню и часы работы'],
+      ['Транспорт', 'Маршруты и расписание'],
+      ['IT-поддержка', 'Запросить техническую помощь'],
+      ['Медпункт', 'Медицинская помощь и консультация'],
+      ['Спортцентр', 'Залы и расписание тренировок'],
+      ['Деканат', 'Учебные и студенческие вопросы'],
+      ['Платежи', 'Оплата обучения и история платежей']
+    ]
+  },
+  en: {
+    welcome: 'Welcome!',
+    profile: {
+      studentTitle: 'Student Profile',
+      emptyValue: '—',
+      fields: {
+        fullName: 'Full name',
+        photo: 'Photo',
+        iin: 'National ID number',
+        studentId: 'Student ID',
+        birthDate: 'Date of birth',
+        gender: 'Gender',
+        group: 'Group',
+        course: 'Year of study',
+        studyForm: 'Study mode',
+        studyLanguage: 'Language of instruction',
+        specialty: 'Specialty / degree program',
+        institute: 'Institute',
+        department: 'Department',
+        academicStatus: 'Academic status'
+      },
+      values: {
+        gender: { male: 'Male', female: 'Female' },
+        studyForm: { fullTime: 'Full-time', partTime: 'Part-time' },
+        studyLanguage: { kk: 'Қазақша', ru: 'Русский', en: 'English' },
+        academicStatus: {
+          studying: 'Studying',
+          academicLeave: 'Academic leave',
+          graduate: 'Graduate',
+          expelled: 'Expelled'
+        }
+      },
+      actions: {
+        edit: 'Edit',
+        save: 'Save',
+        cancel: 'Cancel',
+        changePhoto: 'Change photo',
+        showIin: 'Show ID number',
+        hideIin: 'Hide ID number'
+      },
+      sections: { personalData: 'Personal information', study: 'Studies' },
+      validation: {
+        required: 'This field is required.',
+        requiredStudentId: 'Enter the student ID.',
+        requiredGroup: 'Enter the group.',
+        invalidIin: 'The ID number must contain 12 digits.',
+        invalidBirthDate: 'Enter a real date in DD.MM.YYYY format that is not in the future.',
+        invalidCourse: 'The year of study must be between 1 and 6.',
+        photoPermissionDenied: 'Allow access to the photo library to choose a photo.',
+        photoPickerError: 'Could not open the photo library.'
+      }
+    },
+    campusHubTitle: 'Campus Hub',
+    back: 'Back',
+    openLibrary: 'Open library',
+    profileTitle: 'Profile',
+    accountLabel: 'Login',
+    accountUnavailable: 'Account not found',
+    servicesTitle: 'Campus Services',
+    longPressToSelect: 'Long press to select this service',
+    tabHome: 'Home',
+    tabServices: 'Services',
+    tabProfile: 'Profile',
+    loginSubtitle: 'Sign in to Campus Services',
+    login: 'Login',
+    password: 'Password',
+    loginPlaceholder: 'Enter your login',
+    passwordPlaceholder: 'Enter your password',
+    hide: 'Hide',
+    show: 'Show',
+    loginButton: 'Sign in',
+    registerButton: 'Register a new account',
+    fillLogin: 'Please enter your login.',
+    fillPassword: 'Please enter your password.',
+    minPassword: (length: number) => `Password must contain at least ${length} characters.`,
+    registerFirst: 'Register an account first.',
+    invalidCredentials: 'Invalid login or password.',
+    registerTitle: 'Create an account',
+    registerSubtitle: 'Access all Campus Services',
+    newLoginPlaceholder: 'Create a login',
+    repeatPassword: 'Repeat password',
+    repeatPasswordPlaceholder: 'Enter the password again',
+    allFields: 'Please fill in all fields.',
+    passwordsMismatch: 'Passwords do not match.',
+    register: 'Register',
+    backToLogin: 'Back to sign in',
+    campusSubtitle: 'All university services in one place',
+    selectedOnly: 'Selected only',
+    selected: 'Selected',
+    unavailable: 'Unavailable',
+    new: 'New',
+    logout: 'Sign out',
+    errorTitle: 'Error',
+    routeNotFound: 'Route not found',
+    switchTheme: (theme: ThemeName) => theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme',
+    switchLanguage: (next: Language) => next === 'kk' ? 'Switch language to Kazakh' : next === 'ru' ? 'Switch language to Russian' : 'Switch language to English',
+    services: [
+      ['Library', 'Books and learning resources'],
+      ['Cafeteria', 'Menu and opening hours'],
+      ['Transport', 'Routes and schedules'],
+      ['IT Support', 'Request technical assistance'],
+      ['Medical Center', 'Medical help and advice'],
+      ['Sports Center', 'Gyms and training schedule'],
+      ['Dean\'s Office', 'Academic and student support'],
+      ['Payments', 'Tuition fees and payment history']
+    ]
+  },
+  kk: {
+    welcome: 'Қош келдіңіз!',
+    profile: {
+      studentTitle: 'Студент профилі',
+      emptyValue: '—',
+      fields: {
+        fullName: 'Аты-жөні',
+        photo: 'Фото',
+        iin: 'ЖСН',
+        studentId: 'Студент ID',
+        birthDate: 'Туған күні',
+        gender: 'Жынысы',
+        group: 'Тобы',
+        course: 'Курс',
+        studyForm: 'Оқу түрі',
+        studyLanguage: 'Оқыту тілі',
+        specialty: 'Мамандық / білім беру бағдарламасы',
+        institute: 'Институт',
+        department: 'Кафедра',
+        academicStatus: 'Академиялық мәртебесі'
+      },
+      values: {
+        gender: { male: 'Ер', female: 'Әйел' },
+        studyForm: { fullTime: 'Күндізгі', partTime: 'Сырттай' },
+        studyLanguage: { kk: 'Қазақша', ru: 'Русский', en: 'English' },
+        academicStatus: {
+          studying: 'Оқиды',
+          academicLeave: 'Академиялық демалыста',
+          graduate: 'Түлек',
+          expelled: 'Оқудан шығарылған'
+        }
+      },
+      actions: {
+        edit: 'Өңдеу',
+        save: 'Сақтау',
+        cancel: 'Болдырмау',
+        changePhoto: 'Фотоны өзгерту',
+        showIin: 'ЖСН көрсету',
+        hideIin: 'ЖСН жасыру'
+      },
+      sections: { personalData: 'Жеке деректер', study: 'Оқу' },
+      validation: {
+        required: 'Міндетті өрісті толтырыңыз.',
+        requiredStudentId: 'Студент ID енгізіңіз.',
+        requiredGroup: 'Тобыңызды енгізіңіз.',
+        invalidIin: 'ЖСН 12 цифрдан тұруы керек.',
+        invalidBirthDate: 'Болашақ емес, КК.АА.ЖЖЖЖ форматындағы нақты күнді енгізіңіз.',
+        invalidCourse: 'Курс 1 мен 6 аралығында болуы керек.',
+        photoPermissionDenied: 'Фото таңдау үшін галереяға рұқсат беріңіз.',
+        photoPickerError: 'Галереяны ашу мүмкін болмады.'
+      }
+    },
+    campusHubTitle: 'Campus Hub',
+    back: 'Артқа',
+    openLibrary: 'Кітапхананы ашу',
+    profileTitle: 'Профиль',
+    accountLabel: 'Логин',
+    accountUnavailable: 'Аккаунт табылмады',
+    servicesTitle: 'Campus Services',
+    longPressToSelect: 'Қызметті таңдау үшін басып тұрыңыз',
+    tabHome: 'Басты бет',
+    tabServices: 'Қызметтер',
+    tabProfile: 'Профиль',
+    loginSubtitle: 'Campus Services жүйесіне кіру',
+    login: 'Логин',
+    password: 'Құпиясөз',
+    loginPlaceholder: 'Логиніңізді енгізіңіз',
+    passwordPlaceholder: 'Құпиясөзіңізді енгізіңіз',
+    hide: 'Жасыру',
+    show: 'Көрсету',
+    loginButton: 'Кіру',
+    registerButton: 'Жаңа аккаунт тіркеу',
+    fillLogin: 'Логин өрісін толтырыңыз.',
+    fillPassword: 'Құпиясөз өрісін толтырыңыз.',
+    minPassword: (length: number) => `Құпиясөз кемінде ${length} таңбадан тұруы керек.`,
+    registerFirst: 'Алдымен аккаунт тіркеңіз.',
+    invalidCredentials: 'Логин немесе құпиясөз қате.',
+    registerTitle: 'Аккаунт тіркеу',
+    registerSubtitle: 'Campus Services қызметтеріне қол жеткізіңіз',
+    newLoginPlaceholder: 'Логин ойлап табыңыз',
+    repeatPassword: 'Құпиясөзді қайталаңыз',
+    repeatPasswordPlaceholder: 'Құпиясөзді қайта енгізіңіз',
+    allFields: 'Барлық өрісті толтырыңыз.',
+    passwordsMismatch: 'Құпиясөздер сәйкес келмейді.',
+    register: 'Тіркелу',
+    backToLogin: 'Кіруге оралу',
+    campusSubtitle: 'Университет қызметтерінің барлығы бір жерде',
+    selectedOnly: 'Таңдалғандар ғана',
+    selected: 'Таңдалған',
+    unavailable: 'Қолжетімсіз',
+    new: 'Жаңа',
+    logout: 'Шығу',
+    errorTitle: 'Қате',
+    routeNotFound: 'Маршрут табылмады',
+    switchTheme: (theme: ThemeName) => theme === 'dark' ? 'Ашық тақырыпқа ауысу' : 'Қараңғы тақырыпқа ауысу',
+    switchLanguage: (next: Language) => next === 'ru' ? 'Орыс тіліне ауысу' : next === 'en' ? 'Ағылшын тіліне ауысу' : 'Қазақ тілінде қалу',
+    services: [
+      ['Кітапхана', 'Кітаптар мен оқу ресурстары'],
+      ['Асхана', 'Мәзір және жұмыс уақыты'],
+      ['Көлік', 'Маршруттар мен қозғалыс кестесі'],
+      ['IT қолдау', 'Техникалық көмек сұрау'],
+      ['Медпункт', 'Медициналық көмек және кеңес'],
+      ['Спорт орталығы', 'Залдар мен жаттығу кестесі'],
+      ['Деканат', 'Оқу және студент мәселелері'],
+      ['Төлемдер', 'Оқу ақысы мен төлем тарихы']
+    ]
+  }
+} as const;
+
+export const getNextLanguage = (language: Language): Language => {
+  if (language === 'ru') {
+    return 'en';
+  }
+
+  if (language === 'en') {
+    return 'kk';
+  }
+
+  return 'ru';
+};

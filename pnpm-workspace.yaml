@@ -3,4 +3,6 @@ packages:
   - 'packages/*'
 allowBuilds:
   '@parcel/watcher': true
+  '@scarf/scarf': false
   unrs-resolver: true
+  sharp: false
