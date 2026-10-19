@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { validateEnvironment } from './config/env.validation';
 import { HealthController } from './health.controller';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { HealthController } from './health.controller';
       isGlobal: true,
       validate: validateEnvironment,
     }),
+    PrismaModule,
     LoggerModule.forRoot({
       pinoHttp: {
         ...(process.env.NODE_ENV !== 'production' && {

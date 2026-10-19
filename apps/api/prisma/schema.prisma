@@ -1,0 +1,610 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  STUDENT
+  TEACHER
+  CURATOR
+  DEAN_OFFICE
+  ADMIN
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum StudyForm {
+  FULL_TIME
+  PART_TIME
+}
+
+enum StudyLanguage {
+  KK
+  RU
+  EN
+}
+
+enum AcademicStatus {
+  STUDYING
+  ACADEMIC_LEAVE
+  GRADUATE
+  EXPELLED
+}
+
+enum CurriculumItemType {
+  MANDATORY
+  ELECTIVE
+}
+
+enum EnrollmentStatus {
+  IN_PROGRESS
+  PASSED
+  FAILED
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum LessonType {
+  LECTURE
+  PRACTICE
+  LAB
+}
+
+enum ScheduleStatus {
+  ACTIVE
+  CANCELLED
+  CHANGED
+}
+
+enum GradeType {
+  CURRENT
+  MIDTERM
+  EXAM
+  FINAL
+}
+
+enum ApplicationStatus {
+  DRAFT
+  SUBMITTED
+  IN_REVIEW
+  APPROVED
+  REJECTED
+  COMPLETED
+}
+
+enum ApplicationCreator {
+  USER
+  AI
+}
+
+enum NotificationType {
+  GENERAL
+  GRADE
+  SCHEDULE
+  APPLICATION
+  SYSTEM
+}
+
+enum NotificationPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum CampusObjectType {
+  BUILDING
+  DEPARTMENT
+  DEAN_OFFICE
+  LIBRARY
+  LAB
+  DORM
+  CANTEEN
+  SPORT
+}
+
+enum AuditActorType {
+  USER
+  AI
+  SYSTEM
+}
+
+enum AiMessageRole {
+  USER
+  ASSISTANT
+  TOOL
+}
+
+enum AiPendingActionStatus {
+  PROPOSED
+  CONFIRMED
+  REJECTED
+  EXECUTED
+  EXPIRED
+}
+
+model User {
+  id                    String          @id @default(uuid()) @db.Uuid
+  email                 String          @unique
+  passwordHash          String
+  role                  UserRole
+  isActive              Boolean         @default(true)
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+  student               Student?
+  teacher               Teacher?
+  reviewedApplications  Application[]   @relation("ApplicationReviewer")
+  reviewedHistory       ApplicationStatusHistory[] @relation("HistoryActor")
+  notifications         Notification[]
+  aiConversations       AiConversation[]
+
+  @@index([role, isActive])
+}
+
+model Institute {
+  id          String       @id @default(uuid()) @db.Uuid
+  name        String
+  code        String       @unique
+  description String?
+  departments Department[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([name])
+}
+
+model Department {
+  id          String        @id @default(uuid()) @db.Uuid
+  instituteId String        @db.Uuid
+  name        String
+  code        String        @unique
+  description String?
+  institute   Institute     @relation(fields: [instituteId], references: [id], onDelete: Restrict)
+  programs    Program[]
+  teachers    Teacher[]
+  subjects    Subject[]
+  campusObjects CampusObject[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([instituteId])
+  @@index([name])
+}
+
+model Program {
+  id           String       @id @default(uuid()) @db.Uuid
+  departmentId String       @db.Uuid
+  name         String
+  code         String       @unique
+  degree       String?
+  durationYears Int
+  department   Department   @relation(fields: [departmentId], references: [id], onDelete: Restrict)
+  groups       Group[]
+  students     Student[]
+  curricula    Curriculum[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([departmentId])
+  @@index([name])
+}
+
+model Group {
+  id        String          @id @default(uuid()) @db.Uuid
+  programId String          @db.Uuid
+  name      String
+  code      String          @unique
+  program   Program         @relation(fields: [programId], references: [id], onDelete: Restrict)
+  students  Student[]
+  courses   Course[]
+  schedule  ScheduleEntry[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@index([programId])
+  @@index([name])
+}
+
+model Student {
+  id             String          @id @default(uuid()) @db.Uuid
+  userId         String          @unique @db.Uuid
+  studentCode    String          @unique
+  fullName       String
+  photoUrl       String?
+  iin            String?         @unique
+  birthDate      DateTime?       @db.Date
+  gender         Gender?
+  groupId        String          @db.Uuid
+  programId      String          @db.Uuid
+  course         Int
+  studyForm      StudyForm
+  studyLanguage  StudyLanguage
+  academicStatus AcademicStatus  @default(STUDYING)
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group          Group           @relation(fields: [groupId], references: [id], onDelete: Restrict)
+  program        Program         @relation(fields: [programId], references: [id], onDelete: Restrict)
+  enrollments    Enrollment[]
+  documents      Document[]
+  applications   Application[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([groupId])
+  @@index([programId])
+  @@index([academicStatus])
+  @@index([fullName])
+}
+
+model Teacher {
+  id           String          @id @default(uuid()) @db.Uuid
+  userId       String          @unique @db.Uuid
+  teacherCode  String          @unique
+  fullName     String
+  photoUrl     String?
+  departmentId String          @db.Uuid
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  department   Department      @relation(fields: [departmentId], references: [id], onDelete: Restrict)
+  courses      Course[]
+  schedule     ScheduleEntry[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@index([departmentId])
+  @@index([fullName])
+}
+
+model Subject {
+  id             String           @id @default(uuid()) @db.Uuid
+  departmentId   String           @db.Uuid
+  code           String           @unique
+  name           String
+  credits        Decimal          @db.Decimal(5, 2)
+  department     Department       @relation(fields: [departmentId], references: [id], onDelete: Restrict)
+  curriculumItems CurriculumItem[]
+  courses        Course[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@index([departmentId])
+  @@index([name])
+}
+
+model Semester {
+  id        String   @id @default(uuid()) @db.Uuid
+  number    Int
+  startDate DateTime @db.Date
+  endDate   DateTime @db.Date
+  isCurrent Boolean  @default(false)
+  courses   Course[]
+  enrollments Enrollment[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([number])
+  @@index([isCurrent])
+  @@index([startDate, endDate])
+}
+
+model Curriculum {
+  id          String           @id @default(uuid()) @db.Uuid
+  programId   String           @db.Uuid
+  name        String
+  version     String
+  effectiveFrom DateTime?      @db.Date
+  effectiveTo DateTime?        @db.Date
+  program     Program          @relation(fields: [programId], references: [id], onDelete: Restrict)
+  items       CurriculumItem[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@unique([programId, version])
+  @@index([programId])
+}
+
+model CurriculumItem {
+  id             String                   @id @default(uuid()) @db.Uuid
+  curriculumId   String                   @db.Uuid
+  subjectId      String                   @db.Uuid
+  semesterNumber Int
+  type           CurriculumItemType
+  credits        Decimal                  @db.Decimal(5, 2)
+  curriculum     Curriculum               @relation(fields: [curriculumId], references: [id], onDelete: Cascade)
+  subject        Subject                  @relation(fields: [subjectId], references: [id], onDelete: Restrict)
+  prerequisites  CurriculumPrerequisite[] @relation("PrerequisiteTarget")
+  requiredBy     CurriculumPrerequisite[] @relation("PrerequisiteSource")
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+
+  @@unique([curriculumId, subjectId])
+  @@index([curriculumId, semesterNumber])
+  @@index([subjectId])
+}
+
+model CurriculumPrerequisite {
+  id                  String         @id @default(uuid()) @db.Uuid
+  curriculumItemId    String         @db.Uuid
+  prerequisiteItemId  String         @db.Uuid
+  curriculumItem      CurriculumItem @relation("PrerequisiteTarget", fields: [curriculumItemId], references: [id], onDelete: Cascade)
+  prerequisiteItem    CurriculumItem @relation("PrerequisiteSource", fields: [prerequisiteItemId], references: [id], onDelete: Cascade)
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  @@unique([curriculumItemId, prerequisiteItemId])
+  @@index([prerequisiteItemId])
+}
+
+model Course {
+  id          String          @id @default(uuid()) @db.Uuid
+  subjectId   String          @db.Uuid
+  semesterId  String          @db.Uuid
+  groupId     String          @db.Uuid
+  teacherId   String          @db.Uuid
+  subject     Subject         @relation(fields: [subjectId], references: [id], onDelete: Restrict)
+  semester    Semester        @relation(fields: [semesterId], references: [id], onDelete: Restrict)
+  group       Group           @relation(fields: [groupId], references: [id], onDelete: Restrict)
+  teacher     Teacher         @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+  enrollments Enrollment[]
+  schedule    ScheduleEntry[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@unique([subjectId, semesterId, groupId])
+  @@index([semesterId, groupId])
+  @@index([teacherId, semesterId])
+  @@index([subjectId])
+}
+
+model Enrollment {
+  id         String           @id @default(uuid()) @db.Uuid
+  studentId  String           @db.Uuid
+  courseId   String           @db.Uuid
+  semesterId String           @db.Uuid
+  status     EnrollmentStatus @default(IN_PROGRESS)
+  student    Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course     Course           @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  semester   Semester         @relation(fields: [semesterId], references: [id], onDelete: Restrict)
+  grades     Grade[]
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  @@unique([studentId, courseId, semesterId])
+  @@index([courseId, status])
+  @@index([semesterId, studentId])
+}
+
+model Classroom {
+  id          String          @id @default(uuid()) @db.Uuid
+  building    String
+  roomNumber  String
+  capacity    Int?
+  description String?
+  schedule    ScheduleEntry[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@unique([building, roomNumber])
+  @@index([building])
+}
+
+model ScheduleEntry {
+  id          String         @id @default(uuid()) @db.Uuid
+  courseId    String         @db.Uuid
+  classroomId String         @db.Uuid
+  teacherId   String         @db.Uuid
+  groupId     String         @db.Uuid
+  dayOfWeek  DayOfWeek
+  startTime   DateTime       @db.Time(0)
+  endTime     DateTime       @db.Time(0)
+  lessonType  LessonType
+  status      ScheduleStatus @default(ACTIVE)
+  course      Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  classroom   Classroom      @relation(fields: [classroomId], references: [id], onDelete: Restrict)
+  teacher     Teacher        @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+  group       Group          @relation(fields: [groupId], references: [id], onDelete: Restrict)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([groupId, dayOfWeek, startTime])
+  @@index([teacherId, dayOfWeek, startTime])
+  @@index([classroomId, dayOfWeek, startTime])
+  @@index([courseId])
+  @@index([status])
+}
+
+model Grade {
+  id          String     @id @default(uuid()) @db.Uuid
+  enrollmentId String    @db.Uuid
+  type        GradeType
+  score       Decimal    @db.Decimal(6, 2)
+  maxScore    Decimal    @db.Decimal(6, 2)
+  letter      String?
+  points      Decimal?   @db.Decimal(4, 2)
+  enrollment  Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@unique([enrollmentId, type])
+  @@index([enrollmentId])
+  @@index([type])
+}
+
+model GradeScale {
+  id         String   @id @default(uuid()) @db.Uuid
+  letter     String   @unique
+  minScore   Decimal  @unique @db.Decimal(5, 2)
+  gpaPoints  Decimal  @db.Decimal(4, 2)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([minScore])
+}
+
+model DocumentType {
+  id          String     @id @default(uuid()) @db.Uuid
+  name        String     @unique
+  description String?
+  documents   Document[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Document {
+  id             String       @id @default(uuid()) @db.Uuid
+  studentId      String       @db.Uuid
+  documentTypeId String       @db.Uuid
+  title          String
+  fileUrl        String
+  issuedAt       DateTime?
+  expiresAt      DateTime?
+  student        Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  documentType   DocumentType @relation(fields: [documentTypeId], references: [id], onDelete: Restrict)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([studentId, createdAt])
+  @@index([documentTypeId])
+}
+
+model Application {
+  id            String              @id @default(uuid()) @db.Uuid
+  studentId     String              @db.Uuid
+  title         String
+  body          String
+  status        ApplicationStatus    @default(DRAFT)
+  createdBy     ApplicationCreator
+  reviewerId    String?             @db.Uuid
+  reviewComment String?
+  student       Student             @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  reviewer      User?               @relation("ApplicationReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+  history       ApplicationStatusHistory[]
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  @@index([studentId, status])
+  @@index([reviewerId, status])
+  @@index([status, createdAt])
+}
+
+model ApplicationStatusHistory {
+  id            String             @id @default(uuid()) @db.Uuid
+  applicationId String             @db.Uuid
+  fromStatus    ApplicationStatus?
+  toStatus      ApplicationStatus
+  changedById   String?            @db.Uuid
+  comment       String?
+  application   Application        @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  changedBy     User?              @relation("HistoryActor", fields: [changedById], references: [id], onDelete: SetNull)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@index([applicationId, createdAt])
+  @@index([changedById])
+}
+
+model Notification {
+  id        String              @id @default(uuid()) @db.Uuid
+  userId    String              @db.Uuid
+  type      NotificationType
+  title     String
+  body      String
+  priority  NotificationPriority @default(NORMAL)
+  isRead    Boolean             @default(false)
+  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+
+  @@index([userId, isRead, createdAt])
+  @@index([type, priority])
+}
+
+model CampusObject {
+  id           String           @id @default(uuid()) @db.Uuid
+  type         CampusObjectType
+  name         String
+  description  String?
+  location     String?
+  workingHours String?
+  departmentId String?          @db.Uuid
+  department   Department?      @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@index([type, name])
+  @@index([departmentId])
+}
+
+model AuditLog {
+  id         String         @id @default(uuid()) @db.Uuid
+  actorId    String?        @db.Uuid
+  actorType  AuditActorType
+  action     String
+  entityType String
+  entityId   String?        @db.Uuid
+  before     Json?
+  after      Json?
+  confirmed  Boolean        @default(false)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@index([actorId, createdAt])
+  @@index([entityType, entityId, createdAt])
+  @@index([action, createdAt])
+}
+
+model AiConversation {
+  id        String      @id @default(uuid()) @db.Uuid
+  userId    String      @db.Uuid
+  title     String?
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages  AiMessage[]
+  actions   AiPendingAction[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([userId, updatedAt])
+}
+
+model AiMessage {
+  id             String         @id @default(uuid()) @db.Uuid
+  conversationId String         @db.Uuid
+  role           AiMessageRole
+  content        String
+  metadata       Json?
+  conversation   AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([conversationId, createdAt])
+}
+
+model AiPendingAction {
+  id             String                 @id @default(uuid()) @db.Uuid
+  conversationId String                 @db.Uuid
+  actionType     String
+  payload        Json
+  status         AiPendingActionStatus  @default(PROPOSED)
+  expiresAt      DateTime?
+  confirmedAt    DateTime?
+  executedAt     DateTime?
+  conversation   AiConversation        @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  @@index([conversationId, status])
+  @@index([status, expiresAt])
+}
